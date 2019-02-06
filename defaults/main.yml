@@ -1,0 +1,13 @@
+---
+# defaults file for pandorafms_server---
+
+pandorafms_server_dbname: '{{ pandorafms_dbname | default("pandora") }}'
+pandorafms_server_dbuser: '{{ pandorafms_dbuser | default("pandora") }}'
+pandorafms_server_dbpass: '{{ pandorafms_dbpass | default("pandora") }}'
+pandorafms_server_dbhost: '{{ pandorafms_dbhost | default("127.0.0.1") }}'
+pandorafms_server_dbport: '{{ pandorafms_dbport | default(omit) }}'
+
+#pandorafms_server_version: not defined
+pandorafms_server_install_wmic: false
+#pandorafms_server_service_enabled: true
+#pandorafms_server_service_state: started

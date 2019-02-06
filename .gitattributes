@@ -1,0 +1,6 @@
+Gemfile export-ignore
+.gitignore export-ignore
+hacking export-ignore
+.kitchen export-ignore
+.kitchen.yml export-ignore
+test export-ignore

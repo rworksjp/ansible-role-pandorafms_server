@@ -1,0 +1,22 @@
+---
+# tasks file for pandorafms_server
+- name: Ensure current platform is supported by Pandora FMS server/console
+  fail:
+    msg: "Pandora FMS >= 7.0NG 725 does not support EL6 platforms"
+  when:
+  - pandorafms_server_version | default("7.0NG.725") is version("7.0NG.725", ">=")
+  - ansible_os_family == "RedHat"
+  - ansible_distribution_major_version == 6
+
+- name: Ensure epel-release package is installed
+  package:
+    name: epel-release
+
+- name: Gather package facts
+  package_facts:
+
+- name: Ensure pandorafms_server package is installed
+  yum:
+    name: '{{ pandorafms_server_package }}'
+    disablerepo:
+      '{% if packages["atomic-release"]|default(false) %}atomic{% else %}{{ omit }}{% endif %}'

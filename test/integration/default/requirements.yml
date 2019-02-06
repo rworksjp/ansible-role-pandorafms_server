@@ -1,0 +1,8 @@
+- rworksjp.repo-pandorafms
+- koichirok.selenese-runner-java
+- diodonfrost.java
+- koichirok.chromedriver
+- name: rworksjp.pandorafms_console
+  src: https://github.com/rworksjp/ansible-role-pandorafms_console
+  version: initial-version
+  
