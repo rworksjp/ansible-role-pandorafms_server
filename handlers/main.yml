@@ -1,0 +1,15 @@
+---
+# handlers file for pandorafms_server
+- name: condrestart pandora_server
+  service:
+    name: pandora_server
+    state: started
+  check_mode: yes
+  register: r
+  changed_when: r is not changed
+  notify: restart pandora_server
+
+- name: restart pandora_server
+  service:
+    name: pandora_server
+    state: restarted

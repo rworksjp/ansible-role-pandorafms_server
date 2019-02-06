@@ -1,0 +1,44 @@
+---
+- name: prepare for executing role
+  hosts: all
+  become: yes
+  pre_tasks:
+  - name: some version reralted assertions
+    assert:
+      that:
+        - mysql_package_name is defined
+        - mysql_service_name is defined
+
+  - name: install mysql
+    package:
+      name: '{{ mysql_package_name }}'
+
+  - name: start mysql service
+    service:
+      name: '{{ mysql_service_name }}'
+      state: started
+      enabled: yes
+
+  roles:
+  - role: rworksjp.pandorafms_console
+  - role: '{{ repo_root_dir }}'
+    pandorafms_server_service_state: started
+    pandorafms_server_service_enabled: yes
+
+- name: prepare for test
+  hosts: all
+  become: no
+  tasks:
+  - name: ensure dest dir exist for exporting ansible variables
+    local_action:
+      module: file
+      path: '{{ test_cache_dir }}/ansible_facts/'
+      state: directory
+
+  #https://coderwall.com/p/13lh6w/dump-all-variables
+  - name: export ansible variables
+    local_action:
+      module: copy
+      dest: '{{ test_cache_dir }}/ansible_facts/{{inventory_hostname}}.yml'
+      content: '{{ vars | to_nice_yaml }}'
+    changed_when: false # force not changed for idempotent test

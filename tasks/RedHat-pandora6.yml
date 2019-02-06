@@ -1,0 +1,38 @@
+---
+# tasks file for pandorafms_server
+
+# manual install is required due to the pandorafms_server package's broken dependencies.
+
+- name: Install packages required by pandorafms_server package
+  yum:
+    name: '{{ pandorafms_server_required_pkgs }}' 
+    state: present
+    disablerepo: atomic
+
+- name: Ensure packages required by Pandora FMS server >= 7.0NG.731
+  when: pandorafms_server_version is not defined or pandorafms_server_version is version("7.0NG.731", ">=")
+  block:
+  - name: Ensure epel-release is installed
+    package:
+      name: epel-release
+  - name: Ensure perl-Geo-IP is installed
+    package:
+      name: perl-Geo-IP
+
+- name: check pandorafms_server is installed
+  shell: 'rpm -q {{ pandorafms_server_package_name }}'
+  register: pandorafms_server_package_installed
+  failed_when: false
+  changed_when: false
+
+- shell: 'rpm -{{ i_or_F }} --nodeps $(yumdownloader -q --urls {{ pandorafms_server_package }})'
+  register: rpm_result
+  vars:
+    i_or_F: '{% if pandorafms_server_package_installed.rc != 0 %}"i"{% else %}"F"{% endif %}'
+  changed_when:
+    - 'rpm_result is success'
+    - '"package {{ pandorafms_server_package_name }} is not installed" in rpm_result.stdout_lines'
+  when: >
+    pandorafms_server_package_installed.rc != 0
+    or pandorafms_server_package_name not in pandorafms_server_package_installed.stdout_lines
+

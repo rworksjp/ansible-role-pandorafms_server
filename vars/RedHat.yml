@@ -1,0 +1,17 @@
+---
+# RedHat platform specific variables
+
+pandorafms_server_required_pkgs:
+  - perl-IO-Socket-INET6
+  - perl-JSON
+  - perl-libwww-perl
+  - perl-NetAddr-IP
+  - perl-Net-Telnet
+  - perl-Sys-Syslog
+  - perl-XML-Simple
+  - perl-XML-Twig
+  - net-snmp-utils
+  - net-tools
+  - nmap
+
+pandorafms_server_package_name: pandorafms_server

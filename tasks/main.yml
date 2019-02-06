@@ -1,0 +1,67 @@
+---
+# tasks file for pandorafms_server
+- name: load platform specific variables
+  include_vars: '{{ ansible_os_family }}.yml'
+  when: ansible_os_family == "RedHat"
+
+- name: Ensure pandorafms_server is installed (Pandora FMS 6 series)
+  import_tasks: RedHat-pandora6.yml
+  when:
+    - pandorafms_server_version is defined
+    - pandorafms_server_version is version("6", ">=")
+    - pandorafms_server_version is version("7", "<")
+
+- name: Ensure pandorafms_server package is installed (Pandora FMS 7 series)
+  import_tasks: RedHat-pandora7.yml
+  when: pandorafms_server_version is not defined or pandorafms_server_version is version("7", ">=")
+
+- name: Ensure pandora_server.service is installed to /usr/lib/systemd/system
+  when:
+    - ansible_service_mgr == 'systemd'
+    - ansible_os_family == 'RedHat'
+  block:
+  - name: Ensure pandora_server.service is installed
+    copy:
+      src: pandora_server.service
+      dest: '/usr/lib/systemd/system/'
+
+  - name: Ensure init script (installed by package) is removed
+    file:
+      path: '/etc/init.d/pandora_server'
+      state: absent
+    
+- name: Install wmi from atomic repo
+  import_tasks: install-wmi.yml
+  when: pandorafms_server_install_wmic
+
+- name: Ensure pandora_server.conf is configured according to related variables
+  lineinfile:
+    path: '/etc/pandora/pandora_server.conf'
+    regexp: '{{ item.regexp|default(omit) }}'
+    line: '{{ item.line }}'
+    insertafter: '{{ item.insertafter|default(omit) }}'
+    state: present
+  loop: '{% if pandorafms_server_dbport != omit %}{{ default_configs + port_config }}{% else %}{{ default_configs }}{% endif %}'
+  vars:
+    default_configs: 
+    - { insertafter: '^#servername greystone', line: "servername {{ inventory_hostname }}" }
+    - { regex: '^dbname ', line: "dbname {{ pandorafms_server_dbname }}" }
+    - { regex: '^dbuser ', line: "dbuser {{ pandorafms_server_dbuser }}" }
+    - { regex: '^dbpass ', line: "dbpass {{ pandorafms_server_dbpass }}" }
+    - { regex: '^dbhost ', line: "dbhost {{ pandorafms_server_dbhost }}" }
+    port_config:
+    - { regex: '^#?dbport ', line: "dbhost {{ pandorafms_server_dbport }}" }
+  notify:
+  - condrestart pandora_server
+
+- name: Ensure pandora_server service is configured according to pandorafms_server_service_enabled variable
+  service:
+    name: pandora_server
+    enabled: '{{ pandorafms_server_service_enabled }}'
+  when: pandorafms_server_service_enabled is defined
+
+- name: Ensure pandora_server service is configured according to pandorafms_server_service_state variable
+  service:
+    name: pandora_server
+    state: '{{ pandorafms_server_service_state }}'
+  when: pandorafms_server_service_state is defined

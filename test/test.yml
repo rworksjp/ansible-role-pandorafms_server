@@ -1,0 +1,23 @@
+---
+- name: test
+  hosts: localhost
+  tasks:
+  - include_vars:
+      file: '{{ playbook_dir }}/../vars/RedHat.yml'
+
+  - include_vars:
+      file: '{{ playbook_dir }}/../vars/main.yml'
+
+  - assert:
+      that:
+      - '"7.0NG.730" is version("7.0NG.729", ">")'
+      - '"7.0NG.730" is version("7.0NG.730", "=")'
+      - '"7.0NG" is version("7.0NG.730", "<")'
+      - '"7.0NG" is version("6.0SP8", ">")'
+      - pandorafms_server_package == pandorafms_server_package_name
+
+  - assert:
+      that:
+      - pandorafms_server_package == pandorafms_server_package_name + "-7.0NG.730"
+    vars:
+      pandorafms_server_version: "7.0NG.730"

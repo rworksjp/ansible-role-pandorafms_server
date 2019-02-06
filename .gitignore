@@ -1,0 +1,7 @@
+.bundle
+test/cache
+Gemfile.lock
+.python-version
+.ruby-version
+*.retry
+.kitchen

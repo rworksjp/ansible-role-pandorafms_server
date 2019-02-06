@@ -1,0 +1,14 @@
+---
+- name: Ensure atomic-release is installed
+  yum:
+    name: '{{ atomic_release_url }}'
+  vars:
+    atomic_release_url:
+      '{{ "https://www6.atomicorp.com/channels/atomic/centos/%s/%s/RPMS/atomic-release-1.0-21.el%s.art.noarch.rpm"
+          | format(ansible_distribution_major_version,
+                   ansible_userspace_architecture,
+                   ansible_distribution_major_version) }}'
+
+- name: Ensure wmi package is installed
+  yum:
+    name: wmi

@@ -1,0 +1,11 @@
+[Unit]
+Description=Pandora FMS server daemon
+After=network-online.target
+After=syslog.service
+After=mariadb.service
+
+[Service]
+ExecStart=/usr/bin/pandora_server /etc/pandora/pandora_server.conf
+
+[Install]
+WantedBy=multi-user.target

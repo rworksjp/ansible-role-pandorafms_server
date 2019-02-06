@@ -1,0 +1,5 @@
+---
+# vars file for pandorafms_server
+
+pandorafms_server_package:
+  '{{ [pandorafms_server_package_name] | union([pandorafms_server_version|default(None)]) | reject("none") | join("-") }}'

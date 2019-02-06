@@ -1,0 +1,54 @@
+---
+# tasks file for pandorafms_server
+
+- name: Install packages required by pandorafms_server package
+  yum:
+    name: '{{ item }}'
+    state: present
+    disablerepo: atomic
+  with_items: '{{ pandorafms_server_required_pkgs }}'
+
+- name: Check installed pandorafms_server package
+  shell: 'rpm -q pandorafms_server'
+  register: pandorafms_server_package_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install/Upgrade pandorafms_server package
+  shell: 'rpm -{{ i_or_F }} --nodeps $(yumdownloader -q --urls {{ pkgname }})'
+  register: rpm_result
+  vars:
+    pkgname: '{{ ["pandorafms_server"] | union([pandorafms_server_version|default(None)]) | reject("none") | join("-") }}'
+    i_or_F: '{% if pandorafms_server_package_installed|failed %}"i"{% else %}"F"{% endif %}'
+  changed_when:
+    - rpm_result|success
+    - '"package {{ pkgname }} is not installed" in rpm_result.stdout_lines'
+  when: >
+    pandorafms_server_package_installed|failed
+    or pkgname not in pandorafms_server_package_installed.stdout_lines
+
+- name: Install wmi from atomic repo
+  yum:
+    name: wmi
+    state: present
+
+- name: Ensure pandora_server service is enabled and started
+  service:
+    name: pandora_server
+    enabled: yes
+
+- name: Update pandora_server.conf
+  lineinfile:
+    path: '/etc/pandora/pandora_server.conf'
+    regexp: '{{ item.regexp|default(omit) }}'
+    line: '{{ item.line }}'
+    insertafter: '{{ item.insertafter|default(omit) }}'
+    state: present
+  with_items:
+    - { insertafter: '^#servername greystone', line: "servername {{ inventory_hostname }}" }
+    - { regex: '^dbname pandora', line: "dbname {{ pandorafms_server_dbname }}" }
+    - { regex: '^dbuser pandora', line: "dbuser {{ pandorafms_server_dbuser }}" }
+    - { regex: '^dbpass pandora', line: "dbpass {{ pandorafms_server_dbpass }}" }
+    - { regex: '^dbhost pandora', line: "dbpass {{ pandorafms_server_dbhost }}" }
+  notify:
+    - pandorafms_server restart
