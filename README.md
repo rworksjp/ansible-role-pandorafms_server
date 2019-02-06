@@ -1,38 +1,51 @@
-Role Name
+Ansible Role `pandorafms_server`
 =========
 
-A brief description of the role goes here.
+An ansible role to install [Pandora FMS](https://pandorafms.org) server.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+A running MySQL instance that has completed its [initial configuration](https://wiki.pandorafms.com/index.php?title=Pandora:Documentation_en:Installing#Initial_Console_Configuration) if you want to start `pandora_server` service.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Variable | Default | Description
+---------|---------|------------
+`pandorafms_server_version` | - | The version of the Pandora FMS console to install. When `null`, latest package on the repository will be installed.
+`pandorafms_server_dbhost`| `{{ pandorafms_dbhost | default('localhost') }}` | The IP address or hostname of the DB instance to create database for Pandora FMS.
+`pandorafms_server_dbname`| `{{ pandorafms_dbname | default('pandora') }}`  | The name of the Pandora FMS database.
+`pandorafms_server_dbuser`| `{{ pandorafms_dbname | default('pandora') }}`  | The username for the Pandora FMS database.
+`pandorafms_server_dbpass`| `{{ pandorafms_dbname | default('pandora') }}`  | The password of the `pandorafms_dbuser`
+`pandorafms_server_dbport`| `{{ pandorafms_dbname | default(omit) }}`   | The port number used for connecting to database.
+`pandorafms_server_service_enabled`| - | When set to `true` or `false`, `pandora_server` serivce will be enabled/diable.
+`pandorafms_server_service_state`  | - | When set, state of `pandora_server` serivce will be changed to specified state.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- rworksjp.repo-pandorafms
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```
+# Only install package
+- hosts: servers
+  roles:
+    - role: rworksjp.pandorafms_server
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+# Install Pandora FMS server 7.0NG.719, enable and start pandora_server service
+- hosts: servers
+  roles:
+    - role: rworksjp.pandorafms_console
+      pandorafms_server_version: 7.0NG.719
+      pandorafms_server_service_enabled: true
+      pandorafms_server_service_state: started
+```
 
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
