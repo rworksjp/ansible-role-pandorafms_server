@@ -14,11 +14,11 @@ Role Variables
 Variable | Default | Description
 ---------|---------|------------
 `pandorafms_server_version` | - | The version of the Pandora FMS console to install. When `null`, latest package on the repository will be installed.
-`pandorafms_server_dbhost`| `{{ pandorafms_dbhost | default('localhost') }}` | The IP address or hostname of the DB instance to create database for Pandora FMS.
-`pandorafms_server_dbname`| `{{ pandorafms_dbname | default('pandora') }}`  | The name of the Pandora FMS database.
-`pandorafms_server_dbuser`| `{{ pandorafms_dbname | default('pandora') }}`  | The username for the Pandora FMS database.
-`pandorafms_server_dbpass`| `{{ pandorafms_dbname | default('pandora') }}`  | The password of the `pandorafms_dbuser`
-`pandorafms_server_dbport`| `{{ pandorafms_dbname | default(omit) }}`   | The port number used for connecting to database.
+`pandorafms_server_dbhost`| `pandorafms_dbhost` if defined, otherwise 'localhost' | The IP address or hostname of the DB instance to create database for Pandora FMS.
+`pandorafms_server_dbname`| `pandorafms_dbname` if defined, otherwise 'pandora'  | The name of the Pandora FMS database.
+`pandorafms_server_dbuser`| `pandorafms_dbname` if defined, otherwise 'pandora'  | The username for the Pandora FMS database.
+`pandorafms_server_dbpass`| `pandorafms_dbname` if defined, otherwise 'pandora'  | The password of the `pandorafms_dbuser`
+`pandorafms_server_dbport`| `pandorafms_dbname` if defined, otherwise `omit`   | The port number used for connecting to database.
 `pandorafms_server_service_enabled`| - | When set to `true` or `false`, `pandora_server` serivce will be enabled/diable.
 `pandorafms_server_service_state`  | - | When set, state of `pandora_server` serivce will be changed to specified state.
 
