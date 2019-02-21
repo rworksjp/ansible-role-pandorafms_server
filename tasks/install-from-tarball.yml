@@ -49,7 +49,7 @@
         - /usr/share/pandora_server
 
     - name: Install pandorafms_server by running pandora_server_installer
-      shell: ./pandora_server_installer --install
+      shell: yes | ./pandora_server_installer --install
       args:
         chdir: '{{ tempdir.path }}/pandora_server'
 #      creates: FIXME
