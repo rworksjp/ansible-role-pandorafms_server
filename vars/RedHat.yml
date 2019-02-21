@@ -13,5 +13,7 @@ pandorafms_server_required_pkgs:
   - net-snmp-utils
   - net-tools
   - nmap
+  # used in init script for tentacle_server
+  - sudo
 
 pandorafms_server_package_name: pandorafms_server

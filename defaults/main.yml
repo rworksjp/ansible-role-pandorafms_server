@@ -8,6 +8,9 @@ pandorafms_server_dbhost: '{{ pandorafms_dbhost | default("127.0.0.1") }}'
 pandorafms_server_dbport: '{{ pandorafms_dbport | default(omit) }}'
 
 #pandorafms_server_version: not defined
+pandorafms_server_install_from_tarball: false
+#pandorafms_server_package_url: not defined. required when `pandorafms_server_install_from_taball' set to `true'
 pandorafms_server_install_wmic: false
 #pandorafms_server_service_enabled: true
 #pandorafms_server_service_state: started
+pandorafms_server_additional_packages: []
