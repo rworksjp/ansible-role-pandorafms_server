@@ -25,6 +25,9 @@
     - not pandorafms_server_install_from_tarball
     - pandorafms_server_version is not defined or pandorafms_server_version is version("7", ">=")
 
+- name: Ensure extra packages are installed (as neede)
+  package: '{{ pandorafms_server_additional_packages }}'
+
 - name: Ensure pandora_server.service is installed to /usr/lib/systemd/system
   when:
     - ansible_service_mgr == 'systemd'

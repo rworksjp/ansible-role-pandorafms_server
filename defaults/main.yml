@@ -13,3 +13,4 @@ pandorafms_server_install_from_tarball: false
 pandorafms_server_install_wmic: false
 #pandorafms_server_service_enabled: true
 #pandorafms_server_service_state: started
+pandorafms_server_additional_packages: []
