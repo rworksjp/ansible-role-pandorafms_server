@@ -34,7 +34,7 @@
   import_tasks: install-wmi.yml
   when: pandorafms_server_install_wmic
 
-- name: Enuse pandora_server.conf is configured according to related variables
+- name: Ensure pandora_server.conf is configured according to related variables
   lineinfile:
     path: '/etc/pandora/pandora_server.conf'
     regexp: '{{ item.regexp|default(omit) }}'
@@ -65,4 +65,3 @@
     name: pandora_server
     state: '{{ pandorafms_server_service_state }}'
   when: pandorafms_server_service_state is defined
-
