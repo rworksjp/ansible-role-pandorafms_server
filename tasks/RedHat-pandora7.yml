@@ -15,4 +15,4 @@
 - name: Ensure pandorafms_server package is installed
   yum:
     name: '{{ pandorafms_server_package }}'
-    disablerepo: '{{ "atomic-release" in packages | ternary("atomic", omit ) }}'
+    disablerepo: '{% if "atomic-release" in packages %}atomic{% else %}{{ omit }}{% endif %}'
