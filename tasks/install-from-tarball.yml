@@ -1,0 +1,49 @@
+---
+# tasks to install Pandora FMS server from tarball
+
+- name: Check mandatory variables
+  fail:
+    msg: 'you must define pandorafms_server_package_uri'
+  when: pandorafms_server_package_uri is not defined
+
+- name: Ensure tmpdir always removed
+  block:
+    - name: Ensure tempdir exists
+      tempfile:
+        state: directory
+      register: tempdir
+
+    - name: Download archive to tempdir
+      get_url:
+        url: '{{ pandorafms_server_package_uri }}'
+        dest: '{{ tempdir.path }}/'
+      when: pandorafms_server_package_uri is match("^https?://")
+
+    - name: Copy archive to tempdir
+      copy:
+        src: '{{ pandorafms_server_package_uri }}'
+        dest: '{{ tempdir.path }}/'
+      when: pandorafms_server_package_uri is not match("^[^:/]*://")
+
+    - name: Extract archive to tempdir
+      unarchive:
+        src: '{{ tempdir.path }}/{{ pandorafms_server_package_uri | basename }}'
+        dest: '{{ tempdir.path }}/'
+        remote_src: true
+        creates: '{{ tempdir.path }}/pandora_server'
+
+    - name: Ensure pandorafms_server package is not installed
+      package:
+        name: pandorafms_server_package_name
+
+    - name: Install pandorafms_server by running pandora_server_installer
+      shell: ./pandora_server_installer --install
+      args:
+        chdir: '{{ tempdir.path }}/pandora_server'
+#      creates: FIXME
+
+  always:
+    - name: Ensure tempdir is absent
+      file:
+        path: '{{ tempdir.path }}'
+        state: absent
