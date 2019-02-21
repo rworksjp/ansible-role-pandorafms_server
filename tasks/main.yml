@@ -4,6 +4,9 @@
   include_vars: '{{ ansible_os_family }}.yml'
   when: ansible_os_family == "RedHat"
 
+- name: Gather package facts
+  package_facts:
+
 - name: Install pandorafms_server from tarball
   import_tasks: install-from-tarball.yml
   when: pandorafms_server_install_from_tarball

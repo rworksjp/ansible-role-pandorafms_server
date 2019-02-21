@@ -6,6 +6,9 @@
     msg: 'you must define pandorafms_server_package_uri'
   when: pandorafms_server_package_uri is not defined
 
+- name: install required packages
+  import_tasks: install-required-packages.yml
+
 - name: Ensure tmpdir always removed
   block:
     - name: Ensure tempdir exists
