@@ -34,7 +34,8 @@
 
     - name: Ensure pandorafms_server package is not installed
       package:
-        name: pandorafms_server_package_name
+        name: '{{ pandorafms_server_package_name }}'
+        state: absent
 
     - name: Install pandorafms_server by running pandora_server_installer
       shell: ./pandora_server_installer --install
