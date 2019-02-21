@@ -40,6 +40,14 @@
         name: '{{ pandorafms_server_package_name }}'
         state: absent
 
+    - name: Ensure some directories exist
+      file:
+        path: '{{ item }}'
+        state: directory
+      loop:
+        - /usr/lib/perl5/PandoraFMS
+        - /usr/share/pandora_server
+
     - name: Install pandorafms_server by running pandora_server_installer
       shell: ./pandora_server_installer --install
       args:
