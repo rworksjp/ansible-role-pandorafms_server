@@ -57,7 +57,7 @@
   loop: '{% if pandorafms_server_dbport != omit %}{{ default_configs + port_config }}{% else %}{{ default_configs }}{% endif %}'
   vars:
     default_configs: 
-    - { insertafter: '^#servername greystone', line: "servername {{ inventory_hostname }}" }
+    - { insertafter: '^#servername greystone', line: "servername {{ pandorafms_server_config.servername | default(inventory_hostname) }}" }
     - { regex: '^dbname ', line: "dbname {{ pandorafms_server_dbname }}" }
     - { regex: '^dbuser ', line: "dbuser {{ pandorafms_server_dbuser }}" }
     - { regex: '^dbpass ', line: "dbpass {{ pandorafms_server_dbpass }}" }
